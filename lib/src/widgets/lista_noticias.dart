@@ -20,7 +20,7 @@ class ListaNoticias extends StatelessWidget {
 class _Noticia extends StatelessWidget {
   final Article noticia;
   final int index;
-  const _Noticia({super.key, required this.noticia, required this.index});
+  const _Noticia({required this.noticia, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +29,9 @@ class _Noticia extends StatelessWidget {
         _TarjetaTopBar(noticia: noticia, index: index),
         _TarjetaTitulo(noticia: noticia),
         _TarjetaImagen(noticia: noticia),
+        _TarjetaBody(noticia: noticia),
+        _TarjetaBotones(),
+        const Divider(color: Colors.white54, thickness: 2)
       ],
     );
   }
@@ -92,9 +95,47 @@ class _TarjetaImagen extends StatelessWidget {
                   image: NetworkImage(noticia.urlToImage),
                 )
               : const Image(
-                image: NetworkImage(
-                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkZBy8k1YnTUpnI_pYTScZBWmVlGY9xg1SdOdqQcWMo9R2YG9iIK1XBUXQV-Xb1Mb0V_k&usqp=CAU'),    
+                  image: NetworkImage(
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkZBy8k1YnTUpnI_pYTScZBWmVlGY9xg1SdOdqQcWMo9R2YG9iIK1XBUXQV-Xb1Mb0V_k&usqp=CAU'),
                 )),
+    );
+  }
+}
+
+class _TarjetaBody extends StatelessWidget {
+  final Article noticia;
+  const _TarjetaBody({required this.noticia});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Text((noticia.description != null) ? noticia.description : ''));
+  }
+}
+
+class _TarjetaBotones extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        RawMaterialButton(
+          onPressed: () {},
+          fillColor: Colors.red,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: const Icon(Icons.star_border),
+        ),
+        const SizedBox(width: 20),
+        RawMaterialButton(
+          onPressed: () {},
+          fillColor: Colors.blue,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: const Icon(Icons.sign_language),
+        ),
+      ],
     );
   }
 }
