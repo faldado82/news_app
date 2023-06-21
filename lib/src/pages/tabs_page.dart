@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:news_app/src/pages/tab1_page.dart';
 import 'package:news_app/src/pages/tab2_page.dart';
 import 'package:provider/provider.dart';
@@ -29,8 +30,10 @@ class _Navegacion extends StatelessWidget {
         currentIndex: navegacionModel.paginaActual, // elemento seleccionado
         onTap: (i) => navegacionModel.paginaActual = i,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Para ti'),
-          BottomNavigationBarItem(icon: Icon(Icons.public), label: 'Encabezado')
+          BottomNavigationBarItem(
+              icon: FaIcon(FontAwesomeIcons.flagUsa), label: 'USA News'),
+          BottomNavigationBarItem(
+              icon: FaIcon(FontAwesomeIcons.earthAmericas), label: 'World News')
         ]);
   }
 }
