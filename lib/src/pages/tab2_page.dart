@@ -11,18 +11,23 @@ class Tab2Page extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final newsService = Provider.of<NewsService>(context);
-    final articlesByCountry = newsService.obtenerArticlesByCountry;
+    final articlesByCountry = newsService.obtenerArticlesByCountry?.toList();
 
     return SafeArea(
       child: Scaffold(
         body: Column(
           children: [
             _ListaPaises(),
-            Expanded(
-              child: articlesByCountry != null
-                  ? ListaNoticias(noticias: articlesByCountry)
-                  : const CircularProgressIndicator(),
-            ),
+            if (!newsService.isLoading)
+              Expanded(
+                child: ListaNoticias(noticias: articlesByCountry!),
+              ),
+            if (newsService.isLoading)
+              const Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(color: Colors.red),
+                ),
+              )
           ],
         ),
       ),
@@ -48,16 +53,29 @@ class _ListaPaises extends StatelessWidget {
           return SizedBox(
             width: 75,
             child: Padding(
-                padding: const EdgeInsets.all(5),
-                child: Column(
-                  children: [
-                    //_CategoryButton(categoria: categories[index]),
-                    _CountryButton(pais: countries[index]),
-                    const SizedBox(height: 5),
-                    Text(
-                        '${countryName[0].toUpperCase()}${countryName.substring(1)}')
-                  ],
-                )),
+              padding: const EdgeInsets.all(5),
+              child: Column(
+                children: [
+                  _CountryButton(pais: countries[index]),
+                  const SizedBox(height: 5),
+                  Consumer<NewsService>(
+                    builder: (context, newsService, _) {
+                      final selectedCode = newsService.selectedCode;
+                      final countryCode = countries[index].code;
+
+                      return Text(
+                        '${countryName[0].toUpperCase()}${countryName.substring(1)}',
+                        style: TextStyle(
+                          color: selectedCode == countryCode
+                              ? Colors.red
+                              : Colors.white,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
           );
         },
       ),
@@ -71,6 +89,10 @@ class _CountryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final newsService = Provider.of<NewsService>(context);
+    final selectedCountryCode = newsService.selectedCode;
+    final isSelected = selectedCountryCode == pais.code;
+
     String flagName = '';
 
     switch (pais.name.toLowerCase()) {
@@ -109,9 +131,9 @@ class _CountryButton extends StatelessWidget {
         child: Container(
           width: 60,
           height: 50,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.rectangle,
-            color: Colors.black45,
+            color: isSelected ? Colors.redAccent : Colors.black45,
           ),
           child: CountriesFlag(
             flagName,

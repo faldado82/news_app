@@ -1,8 +1,6 @@
 import 'package:countries_flag/countries_flag.dart';
 import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
-
 import 'package:news_app/src/models/country_model.dart';
 import 'package:news_app/src/models/news_models.dart';
 
@@ -12,6 +10,7 @@ const String _apiKey = 'fa2c9f63199e4379a5637cfb302d97a4';
 class NewsService with ChangeNotifier {
   List<Article> headlines = [];
   String _selectedCode = 'ar';
+  bool _isLoading = true;
 
   List<Country> countries = [
     Country(CountriesFlag(Flags.argentina), 'argentina', 'ar'),
@@ -23,7 +22,7 @@ class NewsService with ChangeNotifier {
     Country(CountriesFlag(Flags.italy), 'italy', 'it'),
   ];
 
-  Map<String, List<Article>> categoryArticles = {};
+  // Map<String, List<Article>> categoryArticles = {};
   Map<String, List<Article>> countryArticles = {};
 
   NewsService() {
@@ -31,7 +30,10 @@ class NewsService with ChangeNotifier {
     for (var item in countries) {
       countryArticles[item.code] = []; //List<Article>.empty();
     }
+    getArticlesByCountry(_selectedCode);
   }
+
+  bool get isLoading => _isLoading;
 
   // Getter & Setter - Country
   String get selectedCode => _selectedCode;
@@ -59,6 +61,8 @@ class NewsService with ChangeNotifier {
   getArticlesByCountry(String country) async {
     if (countryArticles.containsKey(country) &&
         countryArticles[country]!.isNotEmpty) {
+      _isLoading = false;
+      notifyListeners();
       return countryArticles[country];
     }
 
@@ -73,6 +77,7 @@ class NewsService with ChangeNotifier {
     } else {
       countryArticles[country] = newsResponse.articles;
     }
+    _isLoading = false;
     notifyListeners();
   }
 }
